@@ -14,6 +14,7 @@ import {
 } from "./api/middleware.js";
 import { handlerChirpsValidate } from "./api/chirps.ts";
 import { config } from "./config.js";
+import { handlerCreateUser } from "./api/users.ts";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -30,6 +31,7 @@ app.get("/api/healthz", handlerReadiness);
 app.post("/api/validate_chirp", handlerChirpsValidate)
 app.get("/admin/metrics", handlerMetrics);
 app.post("/admin/reset", handlerReset);
+app.post("/api/users", handlerCreateUser)
 
 // Middlwware error handling
 
