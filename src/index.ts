@@ -4,6 +4,7 @@ import { handlerReadiness } from "./api/readiness.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import {
+	errorMiddleWare,
 	middlewareLogResponse,
 	middlewareMetricsInc,
 } from "./api/middleware.js";
@@ -21,6 +22,11 @@ app.get("/api/healthz", handlerReadiness);
 app.post("/api/validate_chirp", handlerChirpsValidate)
 app.get("/admin/metrics", handlerMetrics);
 app.post("/admin/reset", handlerReset);
+
+// Middlwware error handling
+
+app.use(errorMiddleWare);
+
 
 app.listen(PORT, () => {
 	console.log(`Server is running at http://localhost:${PORT}`);
