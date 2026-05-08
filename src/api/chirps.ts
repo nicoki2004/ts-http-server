@@ -2,6 +2,9 @@ import type { Request, Response } from "express";
 
 import { respondWithJSON, respondWithError } from "./json.js";
 
+const forbiddenWords = ["kerfuffle", "sharbert", "fornax"]
+const replacement = "****"
+
 export async function handlerChirpsValidate(req: Request, res: Response) {
 	type parameters = {
 		body: string;
@@ -15,7 +18,21 @@ export async function handlerChirpsValidate(req: Request, res: Response) {
 		return;
 	}
 
+	const words = params.body.split(" ");
+
+	for (let i = 0; i < words.length; i++) {
+		const word = words[i] || ""
+		const loweredWord = word.toLowerCase();
+		if (forbiddenWords.includes(loweredWord)) {
+			words[i] = replacement;
+		}
+	}
+	const cleanedBody = words.join(" ");
+
 	respondWithJSON(res, 200, {
-		valid: true,
+		cleanedBody: cleanedBody,
 	});
 }
+
+
+
