@@ -22,7 +22,7 @@ export function middlewareLogResponse(
 
 
 export function middlewareMetricsInc(_req: Request, _res: Response, next: NextFunction): void {
-	config.fileserverHits++;
+	config.api.fileServerHits++;
 	next();
 }
 
