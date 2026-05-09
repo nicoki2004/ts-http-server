@@ -14,7 +14,7 @@ import {
 } from "./api/middleware.js";
 import { handlerChirps, handlerChirpsById, handlerChirpsCreate, } from "./api/chirps.ts";
 import { config } from "./config.js";
-import { handlerCreateUser, } from "./api/users.ts";
+import { handlerCreateUser, handlerUpdateUser, } from "./api/users.ts";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.ts";
 
 
@@ -39,6 +39,7 @@ app.post("/api/users", handlerCreateUser)
 app.post("/api/login", handlerLogin)
 app.post("/api/refresh", handlerRefresh)
 app.post("/api/revoke", handlerRevoke)
+app.put("/api/users", handlerUpdateUser)
 
 // Middlwware error handling
 

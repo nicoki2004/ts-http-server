@@ -93,7 +93,7 @@ export async function handlerRevoke(req: Request, res: Response, next: NextFunct
 		const refreshToken = getBearerToken(req)
 
 		if (!refreshToken) {
-			throw new UserNotAuthenticatedError(`Error`)
+			throw new UserNotAuthenticatedError(`Invalid Token`)
 		}
 
 		await revokeRefreshToken(refreshToken)
