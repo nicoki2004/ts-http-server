@@ -3,19 +3,23 @@ import type { NextFunction, Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
 import { createChirp, getAllChirps, getChirp, } from "../db/queries/chirps.js";
 import { BadRequestError, NotFoundError } from "./errors.js";
+import { getBearerToken, validateJWT } from "../auth.ts";
+import { config } from "../config.ts";
 
 export async function handlerChirpsCreate(req: Request, res: Response, next: NextFunction) {
 	type parameters = {
 		body: string;
-		userId: string;
 	};
 
 	try {
 
 		const params: parameters = req.body;
 
+		const token = getBearerToken(req);
+		const userId = validateJWT(token!, config.jwt.secret);
+
 		const cleaned = validateChirp(params.body);
-		const chirp = await createChirp({ body: cleaned, userId: params.userId });
+		const chirp = await createChirp({ body: cleaned, userId: userId });
 
 		respondWithJSON(res, 201, chirp);
 	} catch (e) {

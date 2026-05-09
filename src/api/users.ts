@@ -5,7 +5,7 @@ import { respondWithJSON } from "./json.ts";
 import { hashPassword } from "../auth.ts";
 import type { NewUser } from "../db/schema.ts";
 
-export type UserResponse = Omit<NewUser, "hashedPassword">;
+export type UserResponse = Omit<NewUser, "hashedPassword">
 
 
 export async function handlerCreateUser(req: Request, res: Response, next: NextFunction) {
@@ -36,7 +36,7 @@ export async function handlerCreateUser(req: Request, res: Response, next: NextF
 			email: user.email,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
-		});
+		} satisfies UserResponse);
 
 
 	} catch (e) {
