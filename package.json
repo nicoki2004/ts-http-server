@@ -8,7 +8,7 @@
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "npx tsc && node dist/index.js",
-		"generate": "drizzle-kit generate",
+    "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate"
   },
   "private": true,
@@ -21,8 +21,9 @@
     "typescript": "5"
   },
   "dependencies": {
+    "argon2": "0.44.0",
     "drizzle-orm": "^0.45.2",
     "express": "5.2.1",
-    "postgres": "^3.4.9"
+    "postgres": "3.4.9"
   }
 }

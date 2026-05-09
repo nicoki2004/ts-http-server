@@ -2,7 +2,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { config } from "../config.ts";
 import { respondWithError } from "./json.ts";
-import { BadRequestError, ForbiddenRequestError, NotFoundError, UnauthorizedRequestError } from "./errors.ts";
+import { BadRequestError, ForbiddenRequestError, NotFoundError, UnauthorizedRequestError, UserNotAuthenticatedError } from "./errors.ts";
 
 export function middlewareLogResponse(
 	req: Request,
@@ -46,6 +46,10 @@ export function errorMiddleWare(
 			message = err.message
 			break
 		case err instanceof UnauthorizedRequestError:
+			statusCode = 401
+			message = err.message
+			break
+		case err instanceof UserNotAuthenticatedError:
 			statusCode = 401
 			message = err.message
 			break
