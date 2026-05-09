@@ -1,6 +1,7 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
+import { randomBytes } from "node:crypto"
 
 import { BadRequestError, UserNotAuthenticatedError } from "./api/errors.js";
 import type { Request } from "express";
@@ -73,4 +74,11 @@ export function extractBearerToken(header: string) {
 		throw new BadRequestError("Malformed authorization header");
 	}
 	return splitAuth[1];
+}
+
+
+
+export function makeRefreshToken() {
+	const buf = randomBytes(256).toString("hex")
+	return buf
 }

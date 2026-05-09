@@ -15,7 +15,7 @@ import {
 import { handlerChirps, handlerChirpsById, handlerChirpsCreate, } from "./api/chirps.ts";
 import { config } from "./config.js";
 import { handlerCreateUser, } from "./api/users.ts";
-import { handlerLogin } from "./api/auth.ts";
+import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.ts";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -37,6 +37,8 @@ app.get("/admin/metrics", handlerMetrics);
 app.post("/admin/reset", handlerReset);
 app.post("/api/users", handlerCreateUser)
 app.post("/api/login", handlerLogin)
+app.post("/api/refresh", handlerRefresh)
+app.post("/api/revoke", handlerRevoke)
 
 // Middlwware error handling
 

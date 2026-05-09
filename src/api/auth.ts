@@ -1,20 +1,22 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { getUserByEmail } from "../db/queries/users.ts";
-import { checkPasswordHash, makeJWT } from "../auth.ts";
+import { checkPasswordHash, getBearerToken, makeJWT, makeRefreshToken } from "../auth.ts";
 import { respondWithJSON } from "./json.ts";
 import type { UserResponse } from "./users.ts";
 import { UserNotAuthenticatedError } from "./errors.ts";
 import { config } from "../config.ts";
+import { revokeRefreshToken, saveRefreshToken, userForRefreshToken } from "../db/queries/refresh_tokens.ts";
 
 type LoginResponse = UserResponse & {
 	token: string;
+	refreshToken: string;
 };
 
 export async function handlerLogin(req: Request, res: Response) {
 	type parameters = {
 		password: string;
 		email: string;
-		expiresIn?: number
+		// expiresIn?: number
 	};
 
 	const params: parameters = req.body;
@@ -33,12 +35,17 @@ export async function handlerLogin(req: Request, res: Response) {
 	}
 
 	let duration = config.jwt.defaultDuration;
-	if (params.expiresIn && !(params.expiresIn > config.jwt.defaultDuration)) {
-		duration = params.expiresIn;
-	}
+	// if (params.expiresIn && !(params.expiresIn > config.jwt.defaultDuration)) {
+	// 	duration = params.expiresIn;
+	// }
 
 	const accessToken = makeJWT(user.id, duration, config.jwt.secret);
+	const refreshToken = makeRefreshToken();
 
+	const saved = await saveRefreshToken(user.id, refreshToken);
+	if (!saved) {
+		throw new UserNotAuthenticatedError("could not save refresh token");
+	}
 
 	respondWithJSON(res, 200, {
 		id: user.id,
@@ -46,5 +53,60 @@ export async function handlerLogin(req: Request, res: Response) {
 		createdAt: user.createdAt,
 		updatedAt: user.updatedAt,
 		token: accessToken,
+		refreshToken: refreshToken
 	} satisfies LoginResponse);
 }
+
+
+export async function handlerRefresh(req: Request, res: Response, next: NextFunction) {
+	try {
+		let refreshToken = getBearerToken(req);
+
+		const result = await userForRefreshToken(refreshToken!);
+		if (!result) {
+			throw new UserNotAuthenticatedError("invalid refresh token");
+		}
+
+		const user = result.user;
+		const accessToken = makeJWT(
+			user.id,
+			config.jwt.defaultDuration,
+			config.jwt.secret,
+		);
+
+		type response = {
+			token: string;
+		};
+
+		respondWithJSON(res, 200, {
+			token: accessToken,
+		} satisfies response);
+	} catch (e) {
+		next(e)
+	}
+}
+
+
+
+export async function handlerRevoke(req: Request, res: Response, next: NextFunction) {
+	try {
+		const refreshToken = getBearerToken(req)
+
+		if (!refreshToken) {
+			throw new UserNotAuthenticatedError(`Error`)
+		}
+
+		await revokeRefreshToken(refreshToken)
+
+		respondWithJSON(res, 204, {})
+
+	} catch (e) {
+		next(e)
+	}
+}
+
+
+
+
+
+
