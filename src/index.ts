@@ -12,7 +12,7 @@ import {
 	middlewareLogResponse,
 	middlewareMetricsInc,
 } from "./api/middleware.js";
-import { handlerChirpsValidate } from "./api/chirps.ts";
+import { handlerChirps, handlerChirpsCreate, } from "./api/chirps.ts";
 import { config } from "./config.js";
 import { handlerCreateUser } from "./api/users.ts";
 
@@ -28,7 +28,9 @@ app.use(express.json());
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 
 app.get("/api/healthz", handlerReadiness);
-app.post("/api/validate_chirp", handlerChirpsValidate)
+// app.post("/api/validate_chirp", handlerChirpsValidate)
+app.post("/api/chirps", handlerChirpsCreate)
+app.get("/api/chirps", handlerChirps)
 app.get("/admin/metrics", handlerMetrics);
 app.post("/admin/reset", handlerReset);
 app.post("/api/users", handlerCreateUser)
