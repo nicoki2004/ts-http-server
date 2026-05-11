@@ -4,7 +4,12 @@ type Config = {
 	api: APIConfig
 	db: DBConfig
 	jwt: JWTConfig;
+	polka: PolkaConfig;
 };
+
+type PolkaConfig = {
+	apiKey: string
+}
 
 type APIConfig = {
 	fileServerHits: number;
@@ -53,6 +58,10 @@ export const config: Config = {
 		secret: envOrThrow("JWT_SECRET"),
 		issuer: "chirpy",
 		refreshDuration: 60 * 60 * 24 * 60 * 1000, // 60 days in milliseconds
+	},
+
+	polka: {
+		apiKey: envOrThrow("POLKA_KEY")
 	}
 
 };
