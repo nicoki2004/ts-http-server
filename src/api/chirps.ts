@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 
 import { respondWithJSON } from "./json.js";
-import { createChirp, deleteChirp, getAllChirps, getChirp, } from "../db/queries/chirps.js";
+import { createChirp, deleteChirp, getAllChirps, getChirp, getChirpsByAuthor, } from "../db/queries/chirps.js";
 import { BadRequestError, ForbiddenRequestError, NotFoundError, UserNotAuthenticatedError } from "./errors.js";
 import { getBearerToken, validateJWT } from "../auth.ts";
 import { config } from "../config.ts";
@@ -55,9 +55,21 @@ function getCleanedBody(body: string, badWords: string[]) {
 }
 
 
-export async function handlerChirps(_: Request, res: Response, next: NextFunction) {
+export async function handlerChirps(req: Request, res: Response, next: NextFunction) {
 	try {
-		const chirps = await getAllChirps()
+		let authorId = "";
+		let authorIdQuery = req.query.authorId;
+		if (typeof authorIdQuery === "string") {
+			authorId = authorIdQuery;
+		}
+
+		let chirps
+		if (authorId !== "") {
+			chirps = await getChirpsByAuthor(authorId);
+		} else {
+			chirps = await getAllChirps()
+		}
+
 		respondWithJSON(res, 200, chirps)
 
 	} catch (e) {
