@@ -53,7 +53,8 @@ export async function handlerLogin(req: Request, res: Response) {
 		createdAt: user.createdAt,
 		updatedAt: user.updatedAt,
 		token: accessToken,
-		refreshToken: refreshToken
+		refreshToken: refreshToken,
+		isChirpyRed: user.isChirpyRed
 	} satisfies LoginResponse);
 }
 

@@ -16,6 +16,7 @@ import { handlerChirpDelete, handlerChirps, handlerChirpsById, handlerChirpsCrea
 import { config } from "./config.js";
 import { handlerCreateUser, handlerUpdateUser, } from "./api/users.ts";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.ts";
+import { handlerPolka } from "./api/webhooks.ts";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -41,8 +42,10 @@ app.post("/api/refresh", handlerRefresh)
 app.post("/api/revoke", handlerRevoke)
 app.put("/api/users", handlerUpdateUser)
 app.delete("/api/chirps/:chirpId", handlerChirpDelete)
-// Middlwware error handling
+app.post("/api/polka/webhooks", handlerPolka)
 
+
+// Middlwware error handling
 app.use(errorMiddleWare);
 
 
