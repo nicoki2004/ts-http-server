@@ -59,6 +59,7 @@ export async function handlerChirps(req: Request, res: Response, next: NextFunct
 	try {
 		let authorId = "";
 		let authorIdQuery = req.query.authorId;
+		const sort = req.query.sort
 		if (typeof authorIdQuery === "string") {
 			authorId = authorIdQuery;
 		}
@@ -69,6 +70,15 @@ export async function handlerChirps(req: Request, res: Response, next: NextFunct
 		} else {
 			chirps = await getAllChirps()
 		}
+
+		const sortDirection = sort === "desc" ? "desc" : "asc";
+
+		chirps.sort((a, b) =>
+			sortDirection === "asc"
+				? a.createdAt.getTime() - b.createdAt.getTime()
+				: b.createdAt.getTime() - a.createdAt.getTime(),
+		);
+
 
 		respondWithJSON(res, 200, chirps)
 
