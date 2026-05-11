@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
 import { createChirp, deleteChirp, getAllChirps, getChirp, } from "../db/queries/chirps.js";
 import { BadRequestError, ForbiddenRequestError, NotFoundError, UserNotAuthenticatedError } from "./errors.js";
-import { getBearerToken, hashPassword, validateJWT } from "../auth.ts";
+import { getBearerToken, validateJWT } from "../auth.ts";
 import { config } from "../config.ts";
 
 export async function handlerChirpsCreate(req: Request, res: Response, next: NextFunction) {
@@ -55,7 +55,7 @@ function getCleanedBody(body: string, badWords: string[]) {
 }
 
 
-export async function handlerChirps(req: Request, res: Response, next: NextFunction) {
+export async function handlerChirps(_: Request, res: Response, next: NextFunction) {
 	try {
 		const chirps = await getAllChirps()
 		respondWithJSON(res, 200, chirps)
