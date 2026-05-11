@@ -12,7 +12,7 @@ import {
 	middlewareLogResponse,
 	middlewareMetricsInc,
 } from "./api/middleware.js";
-import { handlerChirps, handlerChirpsById, handlerChirpsCreate, } from "./api/chirps.ts";
+import { handlerChirpDelete, handlerChirps, handlerChirpsById, handlerChirpsCreate, } from "./api/chirps.ts";
 import { config } from "./config.js";
 import { handlerCreateUser, handlerUpdateUser, } from "./api/users.ts";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.ts";
@@ -32,7 +32,7 @@ app.get("/api/healthz", handlerReadiness);
 // app.post("/api/validate_chirp", handlerChirpsValidate)
 app.post("/api/chirps", handlerChirpsCreate)
 app.get("/api/chirps", handlerChirps)
-app.get('/api/chirps/*chirpId', handlerChirpsById)
+app.get('/api/chirps/:chirpId', handlerChirpsById)
 app.get("/admin/metrics", handlerMetrics);
 app.post("/admin/reset", handlerReset);
 app.post("/api/users", handlerCreateUser)
@@ -40,7 +40,7 @@ app.post("/api/login", handlerLogin)
 app.post("/api/refresh", handlerRefresh)
 app.post("/api/revoke", handlerRevoke)
 app.put("/api/users", handlerUpdateUser)
-
+app.delete("/api/chirps/:chirpId", handlerChirpDelete)
 // Middlwware error handling
 
 app.use(errorMiddleWare);
